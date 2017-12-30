@@ -15,6 +15,13 @@ class AstTree:
     @abstractclassmethod
     def getChildrenItor(self):
         pass
+    @abstractclassmethod
+    def toString(self):
+        pass
+    def __str__(self):
+        return self.toString
+
+
 
 
 
