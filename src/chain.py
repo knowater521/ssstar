@@ -24,7 +24,8 @@ class Chain:
 
 class StringChain(Chain):
     def __init__(self, tokenType, *args):
-        super().__init__(tokenType,self.stringStp1,self.stringStp2,self.stringStp3)
+        super().__init__(tokenType, self.stringStp1, self.stringStp2)
+        # super().__init__(tokenType,self.stringStp1,self.stringStp2,self.stringStp3)
     @staticmethod
     def stringStp1(nextFn, line, offSet):
         initalChar = line[offSet]
@@ -34,7 +35,7 @@ class StringChain(Chain):
                 while True:
                     res = nextFn(line, offSet)
                     if res == offSet or res >= len(line):
-                        offSet = res
+                        offSet = res+1
                         break
                     else:
                         offSet = res
@@ -45,9 +46,11 @@ class StringChain(Chain):
         initalChar = line[offSet]
         if initalChar != '"':
             offSet += 1
-        elif initalChar == '"':
-            res = nextFn(line, offSet)
-            offSet = res
+        if initalChar == '\\':
+            print('aa')
+            offSet += 1
+        # elif initalChar == '"':
+        #     return offSet
         return offSet
 
     @staticmethod

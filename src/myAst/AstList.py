@@ -3,7 +3,6 @@ from io import StringIO
 class AstList(AstTree):
 
     def __init__(self,tokens):
-        # super().__init__(token)
         self.childrens = tokens
     def countOfChildrens(self):
         return len(self.childrens)
