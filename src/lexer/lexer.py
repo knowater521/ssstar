@@ -41,7 +41,10 @@ class Lexer:
                            self.raiseErro]
         self.strategies.append(self.raiseErro)
     def peek(self,count:int):
-        pass
+        if(self.addIntoTokenList(count)):
+            return self.tokenList[0:1]
+        else:
+            return EOF
 
     def read(self):
         if(self.addIntoTokenList(0)):

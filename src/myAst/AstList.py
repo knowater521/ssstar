@@ -4,8 +4,7 @@ class AstList(AstTree):
 
     def __init__(self,tokens):
         # super().__init__(token)
-        self.childrens = [].extend(tokens)
-
+        self.childrens = tokens
     def countOfChildrens(self):
         return len(self.childrens)
 
@@ -14,12 +13,12 @@ class AstList(AstTree):
 
     def toString(self):
         sio = StringIO()
-        resString = ''
         sio.write('(')
         sep = " "
         for each in self.childrens:
             sio.write(sep)
-            sio.write(each.val)
+            #每一个不同的class没有实现同样的接口就麻烦了，不统一啊。
+            sio.write(each.toString())
             sio.write(sep)
         sio.write(')')
         return sio.getvalue()
