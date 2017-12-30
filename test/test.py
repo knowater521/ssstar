@@ -2,8 +2,9 @@ from src.lexer.lexer import Lexer
 from src.tokens import EOF
 from abc import ABCMeta,abstractclassmethod,abstractproperty
 import sys
-
 from src.myAst import *
+from abc import abstractclassmethod
+from io import StringIO
 if __name__ == '__main__':
 
     file = open('acfun.txt', 'r')
