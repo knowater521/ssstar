@@ -1,5 +1,5 @@
 from .AstTree import AstTree
-
+from io import StringIO
 class AstList(AstTree):
 
     def __init__(self,tokens):
@@ -13,15 +13,16 @@ class AstList(AstTree):
         return self.childrens.__iter__()
 
     def toString(self):
+        sio = StringIO()
         resString = ''
-        resString += '('
+        sio.write('(')
         sep = " "
         for each in self.childrens:
-            resString+=sep
-            resString+=each.val
-            resString+=sep
-        resString+=')'
-        return resString
+            sio.write(sep)
+            sio.write(each.val)
+            sio.write(sep)
+        sio.write(')')
+        return sio.getvalue()
 
     def location(self):
         return self.childrens[0].lineno
