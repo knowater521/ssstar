@@ -1,0 +1,2 @@
+class VirtualMachineException(Exception):
+    pass
