@@ -1,41 +1,61 @@
 from ..myAst import *
+from ..tokens import *
 
 class Precedence:
-    def __init__(self,level,isAossRight):
+    def __init__(self,level,leftAssoc):
         self.level = level
-        self.isAossRight = isAossRight
+        self.leftAssoc = leftAssoc
 
 class OpPrecedenceParser:
     def __init__(self,lexer):
         self.lexer = lexer
         self.operators = dict()
-        self.operators['<']=Precedence(1,True)
-        self.operators['>']=Precedence(1,True)
-        self.operators['+']=Precedence(2,True)
-        self.operators['-']=Precedence(2,True)
-        self.operators['*']=Precedence(3,True)
-        self.operators['/']=Precedence(3,True)
-        self.operators['^']=Precedence(4,False)
+        self.operators['='] = Precedence(0, True)
+        self.operators['<'] = Precedence(1, True)
+        self.operators['>'] = Precedence(1, True)
+        self.operators['+'] = Precedence(2, True)
+        self.operators['-'] = Precedence(2, True)
+        self.operators['*'] = Precedence(3, True)
+        self.operators['/'] = Precedence(3, True)
+        self.operators['^'] = Precedence(4, False)
 
     def expression(self):
         right = self.factor()
-        nextE=None
+        nextOp=None
         while True:
-            nextE = self.nextOperator()
-            if not nextE:
+            nextOp = self.nextOperator()
+            if not nextOp:
                 break
-            right=self.doShift(right,nextE.val)
+            right=self.doShift(right,nextOp)
         return right
 
 
-    def rightIsExpr(self):
-        pass
+    def rightIsExpr(self,prevOp,nextOp):
+        if (nextOp.leftAssoc):
+            return prevOp.level < nextOp.level
+        else:
+            return prevOp.level <= nextOp.level
 
     def nextOperator(self):
-        return False
+        nextOp = self.lexer.peek(0)[0]
+        if nextOp == '-':
+            return False
+        if (nextOp.type == 'Operator'):
+            return  self.operators[nextOp.value]
+        else:
+            return False
 
-    def doShift(self,right,next):
-        pass
+    def doShift(self,left,prevOp):
+        op = self.lexer.read()
+        right = self.factor()
+        nextOp=None
+        while True:
+            nextOp=self.nextOperator()
+            if nextOp  and self.rightIsExpr(prevOp,nextOp):
+                right=self.doShift(right,nextOp)
+            return BinaryExpr([left,op,right])
+
+
 
     def factor(self):
         if self.nextIsToken('('):
@@ -44,8 +64,13 @@ class OpPrecedenceParser:
             self.thisIsToken(')')
         else:
             num = self.lexer.read()
-            assert num.type == 'Number'
-            expr = NumberLiteral(num)
+            assert num.type == 'Number' or num.type == 'Identifier'
+            if num.type == 'Number':
+                expr = NumberLiteral(num)
+            else:
+                expr = Name(num)
+
+
         return expr
 
     def thisIsToken(self,token):

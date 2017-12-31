@@ -9,7 +9,8 @@ class Token:
     @property
     def value(self):
         return self.val
-
+    def toString(self):
+        return self.val
     def __str__(self):
         return 'type:%s,lineno:%s,val:%s'%(self.type,self.lineno,self.value)
 

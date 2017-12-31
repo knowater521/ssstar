@@ -12,7 +12,7 @@ tokenMap ={
 }
 
 class Lexer:
-
+    #TODO:事实证明,offset不对，应该穿字符串过去才对的。下次改过来才行了。
     @staticmethod
     def linebreak(line,offSet):
         if(line[offSet]=='\n'):
@@ -76,7 +76,6 @@ class Lexer:
                 offSet += 1
                 continue
             offSet = self.tryEveryStrategies(newLine,offSet)
-            print(offSet)
             if newLine[offSet-1] == '\n' or offSet==len(newLine):
                 break
 
@@ -94,5 +93,6 @@ class Lexer:
                     tokenType=each.type
                     tokenLineno = self.currLineno
                     tokenClass = tokenMap[tokenType]
+                    # print(tokenType)
                     self.tokenList.append(tokenClass(tokenLineno,tokenType,tokenVal))
                 return res

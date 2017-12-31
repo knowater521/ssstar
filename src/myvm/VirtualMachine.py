@@ -17,7 +17,15 @@ class VirtualMachine:
     def parse_byte_and_args(self):
         frame = self.frame
         frame_code_obj=frame.code_obj
-        code = frame_code_obj.co_code[self.offset]
+        try:
+            code = frame_code_obj.co_code[self.offset]
+        except IndexError:
+            print(self.offset)
+            print(frame_code_obj.co_code)
+            for each in frame_code_obj.co_code:
+                print(dis.opname[each])
+            exit(99)
+
         name = dis.opname[code]
 
         arg=None
