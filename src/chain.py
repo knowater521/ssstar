@@ -1,6 +1,6 @@
 from functools import partial
 import string
-
+from .boot import handleEscapecc
 class Chain:
     def __init__(self,tokenType,*args):
         self.type =tokenType
@@ -22,13 +22,28 @@ class Chain:
         res= startFn(rawLine, offSet)
         return res
 
+
+
+
+
 class StringChain(Chain):
     def __init__(self, tokenType, *args):
         super().__init__(tokenType, self.stringStp1, self.stringStp2)
-        # super().__init__(tokenType,self.stringStp1,self.stringStp2,self.stringStp3)
+        # super().__init__(tokenType, self.stringStp1, self.stringStp2)
+    @staticmethod
+    def peekNextChar(line,offSet,char):
+        while offSet<=len(line):
+            if line[offSet-1]==' ':
+                offSet += 1
+            elif line[offSet-1]=='\\':
+                return True
+            else:
+                return False
+
     @staticmethod
     def stringStp1(nextFn, line, offSet):
         initalChar = line[offSet]
+        #TODO:这里先用if糊弄一下，以后想办法重构整个东西吧。
         if initalChar == '"':
             offSet += 1
             if nextFn:
@@ -36,6 +51,12 @@ class StringChain(Chain):
                     res = nextFn(line, offSet)
                     if res == offSet or res >= len(line):
                         offSet = res+1
+                        if(StringChain.peekNextChar(line,offSet,'\\')):
+                            offSet += 1
+                            rtn=handleEscapecc(line,offSet)
+                            if type(rtn)==int:
+                                offSet = rtn
+                            # elif type(rtn)==str:
                         break
                     else:
                         offSet = res
@@ -43,14 +64,17 @@ class StringChain(Chain):
 
     @staticmethod
     def stringStp2(nextFn, line, offSet):
-        initalChar = line[offSet]
+        try:
+            initalChar = line[offSet]
+        except :
+            raise Exception("可能是不正确的'\"'导致了错误")
+        if initalChar == '\n':
+            print(offSet)
+            raise EOFError("错误的换行位置在string中")
         if initalChar != '"':
             offSet += 1
         if initalChar == '\\':
-            print('aa')
-            offSet += 1
-        # elif initalChar == '"':
-        #     return offSet
+            offSet=handleEscapecc(line, offSet)
         return offSet
 
     @staticmethod

@@ -1,15 +1,18 @@
-from src.lexer.lexer import Lexer
-from src.parser.exprParser import ExprParser
+from src.boot import file
 from src.tokens import EOF
 from src.myAst import *
-
+from io import StringIO
+from src.lexer.lexer import Lexer
 if __name__ == '__main__':
     # ep=ExprParser(lexer)
     # aac=ep.expression()
     # print(aac.toString())
-    file = open('acfun.txt', 'r')
-    lexer = Lexer(file)
+    # asdas = 'a'
 
+
+
+
+    lexer = Lexer(file)
     while True:
         cc=lexer.read()
         print(cc)

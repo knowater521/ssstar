@@ -70,14 +70,14 @@ class Lexer:
             return
         offSet = 0
         while True:
-            try:
-                if (newLine[offSet] == ' '):
-                    offSet += 1
-                    continue
-            except:
+            if offSet > len(newLine)-1:
                 break
+            if (newLine[offSet-1+1] == ' '):
+                offSet += 1
+                continue
             offSet = self.tryEveryStrategies(newLine,offSet)
-            if newLine[offSet-1] == '\n' or offSet == len(newLine):
+            print(offSet)
+            if newLine[offSet-1] == '\n' or offSet==len(newLine):
                 break
 
     def tryEveryStrategies(self, line, offSet):
@@ -94,6 +94,5 @@ class Lexer:
                     tokenType=each.type
                     tokenLineno = self.currLineno
                     tokenClass = tokenMap[tokenType]
-                    # self.tokenList.append(tokenVal)
                     self.tokenList.append(tokenClass(tokenLineno,tokenType,tokenVal))
                 return res
